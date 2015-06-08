@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class MySqlPersonDaoTest {
     @Ignore
     @Test
-    public void testSaveAndRead(){
+    public void testSaveAndRead() throws SQLException {
         PersonDao mySqlPersonDao = DaoFactory.createMySqlDao();
         Person createdPerson = new Person(1, "Hello", "Kitty", "K","kitty@gmail.com", new Date(2015, 05, 28), "12345");
         mySqlPersonDao.save(createdPerson);
