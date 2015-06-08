@@ -9,7 +9,6 @@ public class DaoFactory {
     }
 
     public static PersonDao createInMemoryDao(){
-        return null;
-        //for unit-tests
+        return new H2PersonDao();
     }
 }
