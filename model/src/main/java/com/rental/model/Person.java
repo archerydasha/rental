@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Created by Dasha on 27.05.15.
  */
-public class Person {
+public class Person implements Comparable {
     private int id;
     private String firstName;
     private String lastName;
@@ -97,6 +97,13 @@ public class Person {
 
     @Override
     public int hashCode() {
-      return Objects.hash(id, email,firstName,lastName,middleName,phone,registrationDate);
+        return Objects.hash(id, email, firstName, lastName, middleName, phone, registrationDate);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Person otherPerson = (Person) o;
+        if (otherPerson.getId() == id) return 0;
+        return id > otherPerson.getId() ? 1 : -1;
     }
 }

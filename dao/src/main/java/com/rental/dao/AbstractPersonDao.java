@@ -1,28 +1,33 @@
 package com.rental.dao;
 
-import com.google.common.base.Throwables;
 import com.rental.dao.connection.ConnectionProvider;
 import com.rental.model.Person;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Dasha on 08.06.15.
  */
 public abstract class AbstractPersonDao implements PersonDao {
-    String SAVE_SQL = "insert into Person (id, firstname, lastname, middlename," +
+    public static String SAVE_SQL = "insert into Person (id, firstname, lastname, middlename," +
             "email, registration_date, phone) values (?,?,?,?,?,?,?)";
-    String READ_SQL = "select * from Person where id = ?";
-    String UPDATE_SQL = "update Person set firstname = ?, lastname = ?, middlename = ?, email = ?, " +
+    public static String READ_SQL = "select * from Person where id = ?";
+    public static String UPDATE_SQL = "update Person set firstname = ?, lastname = ?, middlename = ?, email = ?, " +
             "registration_date = ?, phone = ? where id = ?";
-    String DELETE_SQL = "delete from Person where id = ?";
-    String SELECT_ALL_SQL = "select * from Person";
+    public static String DELETE_SQL = "delete from Person where id = ?";
+    public static String SELECT_ALL_SQL = "select * from Person";
 
+    protected ConnectionProvider connectionProvider;
+
+    protected AbstractPersonDao(ConnectionProvider connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
 
     @Override
     public boolean save(Person person) throws SQLException {
-        Connection connection = getConnection();
+        Connection connection = connectionProvider.createConnection();
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(SAVE_SQL);
@@ -47,7 +52,7 @@ public abstract class AbstractPersonDao implements PersonDao {
 
     @Override
     public Person findById(int id) throws SQLException {
-        Connection connection = getConnection();
+        Connection connection = connectionProvider.createConnection();
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(READ_SQL);
@@ -55,14 +60,7 @@ public abstract class AbstractPersonDao implements PersonDao {
             ResultSet resultSet = statement.executeQuery();
             boolean existsInDb = resultSet.next();
             if (existsInDb) {
-                String firstName = resultSet.getString(2);
-                String lastName = resultSet.getString(3);
-                String middleName = resultSet.getString(4);
-                String email = resultSet.getString(5);
-                Date registrationDate = resultSet.getDate(6);
-                String phone = resultSet.getString(7);
-                Person person = new Person(id, firstName, lastName, middleName, email, registrationDate, phone);
-                return person;
+                return getPersonFromResultSet(resultSet);
             } else {
                 return null;
             }
@@ -76,9 +74,21 @@ public abstract class AbstractPersonDao implements PersonDao {
         }
     }
 
+    private Person getPersonFromResultSet(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt(1);
+        String firstName = resultSet.getString(2);
+        String lastName = resultSet.getString(3);
+        String middleName = resultSet.getString(4);
+        String email = resultSet.getString(5);
+        Date registrationDate = resultSet.getDate(6);
+        String phone = resultSet.getString(7);
+        Person person = new Person(id, firstName, lastName, middleName, email, registrationDate, phone);
+        return person;
+    }
+
     @Override
     public boolean update(Person person) throws SQLException {
-        Connection connection = getConnection();
+        Connection connection = connectionProvider.createConnection();
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = connection.prepareStatement(UPDATE_SQL);
@@ -91,11 +101,11 @@ public abstract class AbstractPersonDao implements PersonDao {
             preparedStatement.setInt(7, person.getId());
             int rowsUpdated = preparedStatement.executeUpdate();
             return rowsUpdated == 1;
-        }finally {
-            if(preparedStatement != null){
+        } finally {
+            if (preparedStatement != null) {
                 preparedStatement.close();
             }
-            if(connection != null){
+            if (connection != null) {
                 connection.close();
             }
         }
@@ -103,7 +113,7 @@ public abstract class AbstractPersonDao implements PersonDao {
 
     @Override
     public boolean delete(int id) throws SQLException {
-        Connection connection = getConnection();
+        Connection connection = connectionProvider.createConnection();
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(DELETE_SQL);
@@ -120,10 +130,24 @@ public abstract class AbstractPersonDao implements PersonDao {
     }
 
     @Override
-    public List<Person> readAll() {
-        return null;
+    public List<Person> readAll() throws SQLException {
+        Connection connection = connectionProvider.createConnection();
+        Statement statement = null;
+        List<Person> result = new ArrayList<Person>();
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(SELECT_ALL_SQL);
+            while (resultSet.next()) {
+                result.add(getPersonFromResultSet(resultSet));
+            }
+        }finally {
+            if(statement != null){
+                statement.close();
+            }
+            if(connection != null){
+                connection.close();
+            }
+        }
+        return result;
     }
-
-
-    protected abstract Connection getConnection();
 }

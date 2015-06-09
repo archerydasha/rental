@@ -12,11 +12,7 @@ import java.util.*;
  */
 public class MySqlPersonDao extends AbstractPersonDao {
 
-    MySqlPersonDao() {
-    }
-
-    @Override
-    protected Connection getConnection() {
-            return ConnectionProvider.createMysqlConnection();
+    protected MySqlPersonDao(ConnectionProvider connectionProvider) {
+        super(connectionProvider);
     }
 }

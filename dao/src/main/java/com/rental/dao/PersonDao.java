@@ -17,5 +17,5 @@ public interface PersonDao {
 
     boolean delete(int id) throws SQLException;
 
-    List<Person> readAll();
+    List<Person> readAll() throws SQLException;
 }
