@@ -31,7 +31,7 @@ CREATE TABLE Property (
     name varchar(70)    NOT NULL ,
     owner_id bigint    NOT NULL ,
     country varchar(70)    NOT NULL ,
-    state int    NULL ,
+    state varchar(20)    NULL ,
     region varchar(70)    NULL ,
     city varchar(70)    NOT NULL ,
     address varchar(70)    NOT NULL ,

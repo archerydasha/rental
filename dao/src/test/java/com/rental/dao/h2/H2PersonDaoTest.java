@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.rental.dao.DaoFactory;
 import com.rental.dao.H2DaoFactory;
-import com.rental.dao.PersonDao;
+import com.rental.dao.IPersonDao;
 import com.rental.dao.connection.ConnectionProvider;
 import com.rental.dao.connection.H2ConnectionProvider;
 import com.rental.model.Person;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class H2PersonDaoTest {
     DaoFactory daoFactory = new H2DaoFactory();
-    private PersonDao h2PersonDao = daoFactory.createPersonDao();
+    private IPersonDao h2PersonDao = daoFactory.createPersonDao();
     private static ConnectionProvider connectionProvider = new H2ConnectionProvider();
 
     private static void runSqlScript(String filename) throws SQLException, FileNotFoundException {

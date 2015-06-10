@@ -7,7 +7,12 @@ import com.rental.dao.connection.H2ConnectionProvider;
  */
 public class H2DaoFactory implements DaoFactory {
     @Override
-    public PersonDao createPersonDao() {
-        return new H2PersonDao(new H2ConnectionProvider());
+    public IPersonDao createPersonDao() {
+        return new PersonDao(new H2ConnectionProvider());
+    }
+
+    @Override
+    public IPropertyDao createPropertyDao() {
+        return new PropertyDao(new H2ConnectionProvider());
     }
 }

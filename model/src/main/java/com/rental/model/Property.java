@@ -1,11 +1,12 @@
 package com.rental.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by Dasha on 27.05.15.
  */
-public class Property {
+public class Property implements Comparable{
     private int id;
     private String name;
     private Person owner;
@@ -118,5 +119,25 @@ public class Property {
 
     public void setMonthlyPrice(int monthlyPrice) {
         this.monthlyPrice = monthlyPrice;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || o.getClass() != getClass()) return  false;
+        Property otherProperty = (Property)o;
+        return ((id == otherProperty.getId()) && Objects.equals(name, otherProperty.getName()) &&
+                Objects.equals(owner, otherProperty.getOwner()) && Objects.equals(country, otherProperty.getCountry()) &&
+                Objects.equals(state, otherProperty.getState()) && Objects.equals(region, otherProperty.getRegion()) &&
+                Objects.equals(city, otherProperty.getCity()) && Objects.equals(address, otherProperty.getAddress()) &&
+                Objects.equals(creationDate, otherProperty.getCreationDate()) &&
+                dailyPrice == otherProperty.getDailyPrice() && monthlyPrice == otherProperty.getMonthlyPrice());
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Property otherProperty = (Property) o;
+        if (otherProperty.getId() == id) return 0;
+        return id > otherProperty.getId() ? 1 : -1;
     }
 }

@@ -7,7 +7,13 @@ import com.rental.dao.connection.MySqlConnectionProvider;
  */
 public class MySqlDaoFactory implements DaoFactory {
     @Override
-    public PersonDao createPersonDao() {
-        return new MySqlPersonDao(new MySqlConnectionProvider());
+    public IPersonDao createPersonDao() {
+        return new PersonDao(new MySqlConnectionProvider());
     }
+
+    @Override
+    public IPropertyDao createPropertyDao() {
+        return new PropertyDao(new MySqlConnectionProvider());
+    }
+
 }
